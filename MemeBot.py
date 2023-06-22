@@ -1,4 +1,4 @@
-import discord ,discord.message,env,random
+import discord ,discord.message,env,random,time
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -28,46 +28,73 @@ async def on_message(message):
     
     msg = str(message.content).split() 
     if msg[0] == ">meme":
-        randomArticle = random.randint(1,20)
+        randomArticle = random.randint(1,80)
         await message.channel.send("Just a second...")
-        meme = getImgUrl(driver=driver , tag=msg[1] , article=str(randomArticle),dismsg=message)
-        await message.channel.send(meme)
-    
+        x = ""
+        try:
+            meme = getImgUrl(driver=driver , tag=msg[1] , article=str(randomArticle))
+            await message.channel.send(meme)
+        except:
+            await message.channel.send("Could not find any meme :/")
+            
+
 
 # gets the image url from the website  
-def getImgUrl(driver,tag,dismsg,article=1,):
+def getImgUrl(driver,tag,article=1,):
     def scrollDown(driver):
         driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
+
     print(f'tag is {tag}')
     print(f'article number is {article}')
-    num = 1
-    scrollDown(driver=driver)
-
     # check if tag exists or not 
     try:
         driver.get(f"https://www.memedroid.com/memes/tag/{tag}")
     except:
         #await dismsg.channel.send(f"could not find meme on {tag}")
         print(f"could not find meme on {tag}")
-
-    # checks if article exists or not 
+    scrollDown(driver=driver)
+    memeUrl = ""
+    # checks if generated article number exists or not 
     try:
         memeUrl = driver.find_element(by=By.XPATH,value=f'/html/body/div[5]/div/div[2]/section/div[2]/article[{article}]/div[1]/a/picture/img')
     except:
-        while num < int(article):
-            num += 1
-            try:
-                memeUrl = driver.find_element(by=By.XPATH,value=f'/html/body/div[5]/div/div[2]/section/div[2]/article[{num}]/div[1]/a/picture/img')
-                break
-            except:
-                if num == 1:
-                    #await dismsg.channel.send("There was some problem :(")
-                    print("There was some problem :(")
-                    break
+        # checks if next (+1) article exists or not
+        scrollDown(driver=driver)
+        print("inside first except")
+        try: 
+            aboveArticle = int(article) + 1 
+            x = str(aboveArticle)
+            memeUrl = driver.find_element(by=By.XPATH,value=f'/html/body/div[5]/div/div[2]/section/div[2]/article[{x}]/div[1]/a/picture/img')
+            print(f"Returning next article {aboveArticle}")
+        except:
+            # from the original article number , this randomly boils down to 1st article 
+            belowArticle = int(article) - 1
+            print("inside second except")
+            while belowArticle < int(article):
+                print(belowArticle)
+                try:
+                    x = str(belowArticle)
+                    memeUrl = driver.find_element(by=By.XPATH,value=f'/html/body/div[5]/div/div[2]/section/div[2]/article[{x}]/div[1]/a/picture/img')
+                    print(f"Returning article {belowArticle}")
+                except:
+                    print("inside third except")
+                    if belowArticle == 1:
+                        print("There was some problem :(")
+                        break
+                    else:
+                        belowArticle = random.randint(1,belowArticle)
                 else:
-                    continue
+                    x = str(belowArticle)
+                    memeUrl = driver.find_element(by=By.XPATH,value=f'/html/body/div[5]/div/div[2]/section/div[2]/article[{x}]/div[1]/a/picture/img')
+                    print(f"Returning article {belowArticle}")
+                    break
 
-    print(memeUrl.get_attribute('src'))
+
+    print(memeUrl.get_attribute('alt'))
     return memeUrl.get_attribute('src')
 
 
