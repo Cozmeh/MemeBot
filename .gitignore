@@ -1,2 +1,6 @@
 env.py
 
+chromedriver.exe
+helper.txt
+test.py
+__pycache__/ImageGetter.cpython-311.pyc
