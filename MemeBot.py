@@ -10,7 +10,9 @@ Client = discord.Client(intents=intents)
 # selenium init
 #chromeDriver = "chromedriver.exe"
 # chromeDriver = Service(executable_path="D:\\Coding\\Projects\\Python\\Discord Bot\\chromedriver.exe")
-options = webdriver.ChromeOptions().add_argument("--ignore-certificate-errors")
+options = webdriver.ChromeOptions()
+options.add_argument("--ignore-certificate-errors")
+options.add_argument('--headless')
 # driver = webdriver.Chrome(service=chromeDriver, options=options)
 driver = webdriver.Chrome(options=options)
 
