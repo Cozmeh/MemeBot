@@ -1,6 +1,7 @@
 # MemeBot
 * This is a basic Discord meme bot that scrapes memes from a website and sends them to a Discord channel based on a user's tag input. The bot is implemented using the Discord.py library and Selenium for web scraping.
-* This bot runs `Locally` in your system 
+* This bot runs `Locally` in your system
+* The selenium webdriver (Chrome) runs headlessly 
 
 ## Setup
 
