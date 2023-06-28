@@ -7,5 +7,5 @@ DEFAULT = "Just a second..."
 # error message by the bot 
 ERROR = "Could not find any meme :/"
 
-# scraping source 
+# scraping source (Code needs to be changed according to the source ie xPath,tags etc )
 SOURCE = "https://www.memedroid.com/memes/tag/"
